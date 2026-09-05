@@ -10,12 +10,15 @@ public class PlayerMovement : MonoBehaviour
 {
     [Header("Input")]
     [SerializeField] private InputController input;
+    [SerializeField] private PlayerCombat combat;
 
     [Space(10)]
     [Header("Movement")]
     [SerializeField][Min(0)] public float moveSpeed = 4f;
-    [SerializeField][Min(0)] private float origionalMoveSpeed = 4f;
+    [SerializeField][Min(0)] public float origionalMoveSpeed = 4f;
     [SerializeField][Min(0)] public float sprintSpeed = 8f;
+    [SerializeField][Min(0)] public float origionalSprintSpeed = 8f;
+    [SerializeField][Min(0)] public float attackSprintSpeed = 6f;
     [SerializeField][Min(0)] private float rotateSpeed = 100f;
 
     [Header("Jump")]
@@ -45,6 +48,11 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        if(combat.isDead)
+        {
+            return;
+        }
+
         moveInput = input.moveAction.action.ReadValue<Vector2>();
         if (input.jumpAction.action.triggered)
         {
