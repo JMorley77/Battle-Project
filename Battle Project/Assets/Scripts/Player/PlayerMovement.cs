@@ -11,6 +11,8 @@ public class PlayerMovement : MonoBehaviour
     [Header("Input")]
     [SerializeField] private InputController input;
     [SerializeField] private PlayerCombat combat;
+    [SerializeField] private PlayerPickUp pickUp;
+
 
     [Space(10)]
     [Header("Movement")]
@@ -29,13 +31,14 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField][Min(0)] private float groundCheckRadius = 0.2f; 
     [SerializeField] private LayerMask groundLayer;
 
-    [HideInInspector]
+
     public bool isSprinting;
     [HideInInspector]
     public bool isGrounded;
     [HideInInspector]
     public Vector2 moveInput;
 
+    public bool canMove = true;
     private Rigidbody rb;
     private bool jumpPressed;
 
@@ -62,17 +65,20 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void FixedUpdate()
-    {
+    {        
+        Sprint();
         Move();
         Rotate();
         GroundCheck();
         Jump();
-        Sprint();
+
     }
 
 
     private void Move()
     {
+        if (!canMove) 
+            return;
         float forward = moveInput.y;
         Vector3 movement = transform.forward * forward;
         movement.Normalize();
@@ -83,6 +89,8 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Rotate()
     {
+        if(!canMove) 
+            return;
         float horizontal = moveInput.x;
         float rotationAmount = horizontal * rotateSpeed * Time.fixedDeltaTime;
         Quaternion deltaRotation = Quaternion.Euler(0f, rotationAmount, 0f);
@@ -90,7 +98,8 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Jump()
     {
-
+        if(!canMove) 
+            return;
         if (!jumpPressed) return; 
 
         jumpPressed = false; 
@@ -99,19 +108,29 @@ public class PlayerMovement : MonoBehaviour
 
         rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
     }
-    
+
     private void Sprint()
     {
+        if (!canMove)
+            return;
+
         if (!isGrounded)
             return;
+
         if (isSprinting)
         {
-            moveSpeed = sprintSpeed;
+            if (combat.isAttacking)
+            {
+                moveSpeed = attackSprintSpeed;
+            }
+            else
+            {
+                moveSpeed = sprintSpeed;
+            }
         }
         else
         {
             moveSpeed = origionalMoveSpeed;
-            isSprinting = false;
         }
     }
 

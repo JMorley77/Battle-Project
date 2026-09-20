@@ -1,12 +1,5 @@
 fileFormatVersion: 2
-guid: 90f7133b0666f8b468813348320867dd
-AssetOrigin:
-  serializedVersion: 1
-  productId: 315151
-  packageName: HEROES PACK
-  packageVersion: 1.0
-  assetPath: Assets/HEROES/MODEL/GOLD_WARRIOR.fbx
-  uploadId: 743588
+guid: 12c7b542bc5405b40a5f2bbc89647acc
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []

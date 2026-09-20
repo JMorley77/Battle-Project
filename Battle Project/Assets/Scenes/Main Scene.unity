@@ -6244,6 +6244,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   input: {fileID: 1181699740}
   combat: {fileID: 5476682131290877834}
+  pickUp: {fileID: 5476682131290877833}
   moveSpeed: 4
   origionalMoveSpeed: 4
   sprintSpeed: 8
@@ -6259,6 +6260,7 @@ MonoBehaviour:
   isSprinting: 0
   isGrounded: 0
   moveInput: {x: 0, y: 0}
+  canMove: 1
 --- !u!54 &5476682131290877830
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -6339,7 +6341,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerPickUp
   inputController: {fileID: 1181699740}
   playerHand: {fileID: 1102702158}
+  playerMovement: {fileID: 5476682131290877828}
   holdDuration: 0.6
+  isHolding: 0
   equippedWeapon: {fileID: 0}
 --- !u!114 &5476682131290877834
 MonoBehaviour:

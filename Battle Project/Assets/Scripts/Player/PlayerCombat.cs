@@ -19,6 +19,12 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField][Min(0)] private float attackRange = 1;
     [SerializeField][Min(0)] private float attackSpeed = 1f;
 
+    [Header("Attack Combo Settings")]
+    [SerializeField][Min(0)] private int maxCombo = 3;
+    [SerializeField][Min(0)] public int currentCombo = 0;
+    [SerializeField][Min(0)] private float comboResetTime = 1f;
+    [SerializeField][Min(0)] private float comboTimer = 1.2f;
+
     [Header("Enemy Detection")]
     [SerializeField] private LayerMask enemyLayer;
     [SerializeField] private float attackRadius = 0.75f;
@@ -26,9 +32,13 @@ public class PlayerCombat : MonoBehaviour
 
     public bool isAttacking = false;
     public bool isDead = false;
+    public bool canCombo = false;
+
     void Update()
     {
-
+        
+        comboTimer -= Time.deltaTime;
+        comboTimer = Mathf.Clamp(comboTimer, 0, comboResetTime);
 
         if (currentHealth <= 0 && !isDead)
         {
@@ -43,6 +53,7 @@ public class PlayerCombat : MonoBehaviour
         if (input.attackAction.action.triggered && player.isGrounded && pickUp.equippedWeapon != null)
         {
             Attack();
+            Combo();
         }
         // heals you until 80 health if you are not dead and below max health
         if (currentHealth < maxHealth && !isDead)
@@ -76,6 +87,29 @@ public class PlayerCombat : MonoBehaviour
         }
 
     }
+
+    public void Combo()
+    {
+        if(!isAttacking)
+            return;
+
+        if(comboTimer <= 0)
+        {
+            currentCombo = 0;
+            comboTimer = comboResetTime;
+            Debug.Log("Combo reset");
+        }
+        currentCombo++;
+        if (currentCombo > maxCombo)
+        {
+            currentCombo = 1;
+        }
+        Debug.Log("Attack triggered. Current combo: " + "<color=green>" + "<b>" + currentCombo + "</b>" + "</color>");
+    }
+
+
+
+
 
     public void Death()
     {

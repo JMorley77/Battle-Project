@@ -6,12 +6,13 @@ public class PlayerPickUp : MonoBehaviour
 {
     [SerializeField] private InputController inputController;
     [SerializeField] private Transform playerHand;
+    [SerializeField] private PlayerMovement playerMovement;
 
     [Header("Hold Settings")]
     [SerializeField] private float holdDuration = 1f;
 
     private float holdTimer; 
-    private bool isHolding;
+    public bool isHolding;
 
 
     private GameObject nearbyWeapon;
@@ -20,15 +21,20 @@ public class PlayerPickUp : MonoBehaviour
 
     private void Update()
     { 
-        if (isHolding)
-        { 
-            holdTimer += Time.deltaTime; 
+        if(!isHolding)
+            return;
+
+        playerMovement.canMove = false;
+        holdTimer += Time.deltaTime; 
             
-            if (holdTimer >= holdDuration) 
-            { 
-                isHolding = false; holdTimer = 0f; Interact(); 
-            } 
+        if (holdTimer >= holdDuration) 
+        { 
+            isHolding = false; 
+            holdTimer = 0f; 
+            Interact();
+            playerMovement.canMove = true;
         } 
+        
     }
 
 
@@ -41,24 +47,27 @@ public class PlayerPickUp : MonoBehaviour
     { 
         inputController.pickUpAction.action.started -= StartHolding; 
         inputController.pickUpAction.action.canceled -= StopHolding; 
+        playerMovement.canMove = true;
     }
     private void StartHolding(InputAction.CallbackContext context)
-    { 
-        if (equippedWeapon == null && nearbyWeapon != null) 
-        { 
-            isHolding = true; holdTimer = 0f; 
-        }  
-        else if (equippedWeapon != null) 
-        { 
-            isHolding = true; holdTimer = 0f; 
-        } 
+    {
+        if (equippedWeapon == null && nearbyWeapon == null)
+            return;
+
+        isHolding = true;
+        holdTimer = 0f;
+
+        playerMovement.canMove = false;
     }
     private void StopHolding(InputAction.CallbackContext context)
     {
-        if (isHolding) 
-        {
-            isHolding = false; holdTimer = 0f; 
-        }
+        if (!isHolding)
+            return;
+            
+        isHolding = false; 
+        holdTimer = 0f; 
+
+        playerMovement.canMove = true;
     }
     private void Interact()
     {
