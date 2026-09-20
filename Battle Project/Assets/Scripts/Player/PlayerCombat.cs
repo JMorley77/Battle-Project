@@ -32,7 +32,7 @@ public class PlayerCombat : MonoBehaviour
 
     public bool isAttacking = false;
     public bool isDead = false;
-    public bool canCombo = false;
+    //public bool canCombo = false;
 
     void Update()
     {
