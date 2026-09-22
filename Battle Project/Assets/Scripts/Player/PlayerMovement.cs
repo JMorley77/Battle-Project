@@ -1,12 +1,13 @@
 using System.Text.RegularExpressions;
 using UnityEngine;
+using Unity.Netcode;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(CapsuleCollider))]
 [RequireComponent(typeof(Animator))]
 
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : NetworkBehaviour
 {
     [Header("Input")]
     [SerializeField] private InputController input;
@@ -51,7 +52,10 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if(combat.isDead)
+        if(!IsOwner)
+            return;
+
+        if (combat.isDead)
         {
             return;
         }
@@ -65,7 +69,10 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void FixedUpdate()
-    {        
+    {
+        if (!IsOwner)
+            return;
+
         Sprint();
         Move();
         Rotate();

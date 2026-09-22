@@ -1,6 +1,7 @@
 using UnityEngine;
+using Unity.Netcode;
 
-public class PlayerAnimation : MonoBehaviour
+public class PlayerAnimation : NetworkBehaviour
 {
     [SerializeField] private Animator animator;
     [SerializeField] private PlayerMovement playerMovement;
@@ -13,6 +14,8 @@ public class PlayerAnimation : MonoBehaviour
 
     private void Update()
     {
+        if (!IsOwner)
+            return;
         animator.SetFloat("Speed", targetSpeed, 0.1f, Time.deltaTime);
         animator.SetBool("IsJumping", !playerMovement.isGrounded);
         animator.SetBool("IsPickingUp", playerPickUp.isHolding);
@@ -72,6 +75,8 @@ public class PlayerAnimation : MonoBehaviour
             case 3:
                 animator.SetTrigger("Attack3");
                 break;
+            default:
+                break;
         }
     }
     #endregion
@@ -80,6 +85,9 @@ public class PlayerAnimation : MonoBehaviour
     // used in animation event at the end of the swing clip
     public void AttackFinished()
     {
+        if (!IsOwner)
+            return;
+
         attackAnimationPlaying = false;
         playerCombat.isAttacking = false;
         playerCombat.currentCombo = 0; // Reset combo count in combat script
@@ -88,6 +96,9 @@ public class PlayerAnimation : MonoBehaviour
 
     public void StopAttackAnimation()
     {
+        if (!IsOwner)
+            return;
+
         attackAnimationPlaying = false;
         playerCombat.isAttacking = false;
         playerCombat.currentCombo = 0;
